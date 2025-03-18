@@ -1,0 +1,96 @@
+// Pseudocode for loading data into a vector, validating, storing, and printing course information
+
+// Define a structure to hold course information
+STRUCT Course
+    courseNumber: STRING
+    courseTitle: STRING
+    prerequisites: LIST of STRING
+END STRUCT
+
+// Define a vector to store all courses
+DECLARE courses AS VECTOR of Course
+
+// Function to load and process the file
+FUNCTION loadCourses(fileName: STRING)
+    // Open the file
+    OPEN fileName FOR READING
+    IF file cannot be opened THEN
+        PRINT "Error: Unable to open file."
+        RETURN
+    END IF
+
+    // Read each line from the file
+    WHILE NOT end of file
+        READ line
+        // Split the line into tokens
+        SPLIT line BY delimiter (e.g., comma) INTO tokens
+
+        // Validate the line format
+        IF size of tokens < 2 THEN
+            PRINT "Error: Invalid line format. Each line must have at least a course number and title."
+            CONTINUE
+        END IF
+
+        // Extract course information
+        SET courseNumber = tokens[0]
+        SET courseTitle = tokens[1]
+        SET prerequisites = EMPTY LIST
+        FOR i FROM 2 TO size of tokens - 1
+            ADD tokens[i] TO prerequisites
+        END FOR
+
+        // Validate prerequisites
+        FOR each prerequisite IN prerequisites
+            IF prerequisite does not exist in courses THEN
+                PRINT "Error: Prerequisite " + prerequisite + " does not exist in the file."
+                CONTINUE
+            END IF
+        END FOR
+
+        // Create a Course object and add it to the vector
+        DECLARE course AS Course
+        SET course.courseNumber = courseNumber
+        SET course.courseTitle = courseTitle
+        SET course.prerequisites = prerequisites
+        ADD course TO courses
+    END WHILE
+
+    // Close the file
+    CLOSE fileName
+END FUNCTION
+
+// Function to search for a course and print its information
+FUNCTION printCourseInfo(courseNumber: STRING)
+    // Search for the course in the vector
+    FOR each course IN courses
+        IF course.courseNumber == courseNumber THEN
+            PRINT "Course Number: " + course.courseNumber
+            PRINT "Course Title: " + course.courseTitle
+            PRINT "Prerequisites: "
+            IF course.prerequisites IS EMPTY THEN
+                PRINT "None"
+            ELSE
+                FOR each prerequisite IN course.prerequisites
+                    PRINT prerequisite
+                END FOR
+            END IF
+            RETURN
+        END IF
+    END FOR
+
+    // If course is not found
+    PRINT "Error: Course " + courseNumber + " not found."
+END FUNCTION
+
+// Main program
+FUNCTION main()
+    // Load courses from the file
+    CALL loadCourses("courses.txt")
+
+    // Prompt user for a course number to search
+    PRINT "Enter a course number to search:"
+    READ userInput
+
+    // Print course information
+    CALL printCourseInfo(userInput)
+END FUNCTION
