@@ -1,0 +1,103 @@
+FUNCTION loadCourses(filePath, hashTable):
+    TRY:
+        Open the file at filePath for reading
+    CATCH error:
+        Print "Error: Unable to open file."
+        RETURN
+
+    FOR each line in the file:
+        Split the line into tokens using a delimiter (e.g., comma or space)
+        
+        IF the number of tokens < 2:
+            Print "Error: Invalid format. Each line must have at least a course number and title."
+            CONTINUE
+
+        Extract courseNumber = tokens[0]
+        Extract courseTitle = tokens[1]
+        Extract prerequisites = tokens[2:] (if any)
+
+        FOR each prerequisite in prerequisites:
+            IF prerequisite does not exist in the file:
+                Print "Error: Prerequisite " + prerequisite + " does not exist in the file."
+                CONTINUE
+
+        Create a Course object with courseNumber, courseTitle, and prerequisites
+        Insert the Course object into the hashTable using courseNumber as the key
+
+    Close the file
+    RETURN
+
+FUNCTION validateFile(filePath):
+    TRY:
+        Open the file at filePath for reading
+    CATCH error:
+        Print "Error: Unable to open file."
+        RETURN False
+
+    Initialize a set called courseNumbers
+
+    FOR each line in the file:
+        Split the line into tokens using a delimiter (e.g., comma or space)
+        
+        IF the number of tokens < 2:
+            Print "Error: Invalid format. Each line must have at least a course number and title."
+            RETURN False
+
+        Extract courseNumber = tokens[0]
+        Add courseNumber to courseNumbers
+
+    Reset file pointer to the beginning of the file
+
+    FOR each line in the file:
+        Split the line into tokens using a delimiter
+        Extract prerequisites = tokens[2:] (if any)
+
+        FOR each prerequisite in prerequisites:
+            IF prerequisite is not in courseNumbers:
+                Print "Error: Prerequisite " + prerequisite + " does not exist in the file."
+                RETURN False
+
+    Close the file
+    RETURN True
+
+STRUCT Course:
+    courseNumber: String
+    courseTitle: String
+    prerequisites: List of Strings
+
+FUNCTION loadCoursesIntoHashTable(filePath, hashTable):
+    IF NOT validateFile(filePath):
+        RETURN
+
+    Open the file at filePath for reading
+
+    FOR each line in the file:
+        Create a Course object with courseNumber, courseTitle, and prerequisites
+        Insert the Course object into the hashTable using courseNumber as the key
+
+    Close the file
+    RETURN
+
+FUNCTION printAllCourses(hashTable):
+    FOR each key in hashTable:
+        Retrieve the Course object from the hashTable using the key
+        Print "Course Number: " + Course.courseNumber
+        Print "Course Title: " + Course.courseTitle
+
+        IF Course.prerequisites is not empty:
+            Print "Prerequisites: " + Join(Course.prerequisites, ", ")
+        ELSE:
+            Print "Prerequisites: None"
+
+        Print a blank line
+
+FUNCTION main():
+    Initialize an empty hashTable
+    filePath = "path/to/course_data.txt"
+
+    Print "Loading courses..."
+    loadCoursesIntoHashTable(filePath, hashTable)
+
+    Print "Courses loaded successfully."
+    Print "Displaying all courses:"
+    printAllCourses(hashTable)
