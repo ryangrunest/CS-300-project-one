@@ -1,0 +1,94 @@
+BEGIN
+
+FUNCTION main()
+  DECLARE fileName AS STRING
+  PROMPT user for file name
+  SET fileName = user input
+
+  DECLARE courseTree AS BinarySearchTree
+  CALL loadCourses(fileName, courseTree)
+
+  CALL printCourses(courseTree)
+
+END FUNCTION
+
+FUNCTION loadCourses(fileName, courseTree)
+  DECLARE file AS File
+  OPEN fileName FOR reading AS file
+
+  IF file cannot be opened THEN
+    PRINT "Error: Unable to open file."
+    RETURN
+  END IF
+
+  DECLARE line AS STRING
+  WHILE NOT end of file
+    READ line FROM file
+    DECLARE tokens AS LIST
+    SET tokens = split(line, ',')
+
+    IF size of tokens < 2 THEN
+      PRINT "Error: Invalid line format."
+      CONTINUE
+    END IF
+
+    DECLARE courseNumber AS STRING
+    DECLARE courseTitle AS STRING
+    DECLARE prerequisites AS LIST
+
+    SET courseNumber = tokens[0]
+    SET courseTitle = tokens[1]
+    SET prerequisites = tokens[2 to end]
+
+    IF prerequisites are not empty THEN
+      FOR EACH prerequisite IN prerequisites
+        IF prerequisite does not exist in courseTree THEN
+          PRINT "Error: Prerequisite " + prerequisite + " does not exist."
+          CONTINUE
+        END IF
+      END FOR
+    END IF
+
+    DECLARE course AS Course
+    SET course.number = courseNumber
+    SET course.title = courseTitle
+    SET course.prerequisites = prerequisites
+
+    CALL courseTree.insert(course)
+  END WHILE
+
+  CLOSE file
+END FUNCTION
+
+FUNCTION printCourses(courseTree)
+  CALL courseTree.inOrderTraversal(printCourse)
+END FUNCTION
+
+FUNCTION printCourse(course)
+  PRINT "Course Number: " + course.number
+  PRINT "Course Title: " + course.title
+  IF course.prerequisites IS NOT empty THEN
+    PRINT "Prerequisites: " + join(course.prerequisites, ', ')
+  ELSE
+    PRINT "Prerequisites: None"
+  END IF
+END FUNCTION
+
+CLASS BinarySearchTree
+  FUNCTION insert(course)
+    // Implementation of binary search tree insertion
+  END FUNCTION
+
+  FUNCTION inOrderTraversal(callback)
+    // Implementation of in-order traversal
+    // Calls callback(course) for each course
+  END FUNCTION
+END CLASS
+
+CLASS Course
+  DECLARE number AS STRING
+  DECLARE title AS STRING
+  DECLARE prerequisites AS LIST
+END CLASS
+
+END
