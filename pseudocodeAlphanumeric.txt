@@ -1,0 +1,28 @@
+// with a vector
+FUNCTION printCoursesUsingVector(courseVector)
+  CALL sort(courseVector, compareByCourseNumber)
+  FOR EACH course IN courseVector
+    CALL printCourse(course)
+  END FOR
+END FUNCTION
+
+FUNCTION compareByCourseNumber(course1, course2)
+  RETURN course1.number < course2.number
+END FUNCTION
+
+// with a hash table
+FUNCTION printCoursesUsingHashTable(courseHashTable)
+  DECLARE courseList AS LIST
+  FOR EACH course IN courseHashTable
+    ADD course TO courseList
+  END FOR
+  CALL sort(courseList, compareByCourseNumber)
+  FOR EACH course IN courseList
+    CALL printCourse(course)
+  END FOR
+END FUNCTION
+
+// with a binary search tree
+FUNCTION printCoursesUsingTree(courseTree)
+  CALL courseTree.inOrderTraversal(printCourse)
+END FUNCTION

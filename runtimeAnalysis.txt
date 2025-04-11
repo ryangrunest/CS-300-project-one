@@ -1,0 +1,59 @@
+Big O Analysis of Reading the File and Creating Course Objects
+Pseudocode Analysis
+Reading the File:
+
+Each line of the file is read once (WHILE NOT end of file loop).
+Cost per line: 1.
+Number of executions: n (number of courses in the file).
+Total Cost: O(n).
+Parsing Each Line:
+
+Splitting the line into tokens (SET tokens = split(line, ',')).
+Cost per line: O(k) (where k is the average number of tokens per line).
+Number of executions: n.
+Total Cost: O(n * k).
+Checking Prerequisites:
+
+For each course, prerequisites are checked in a loop (FOR EACH prerequisite IN prerequisites).
+Cost per line: O(log n) for checking existence in the tree (or O(1) for hash table, or O(n) for vector).
+Number of executions: m (average number of prerequisites per course).
+Total Cost: O(n * m * log n) for tree, O(n * m) for hash table, O(n * m * n) for vector.
+Inserting into the Data Structure:
+
+Each course is inserted into the data structure.
+Cost per line: O(log n) for tree, O(1) for hash table, O(n) for vector.
+Number of executions: n.
+Total Cost: O(n * log n) for tree, O(n) for hash table, O(n^2) for vector.
+Total Running Time
+Binary Search Tree: O(n * k + n * m * log n + n * log n) → Dominated by O(n * m * log n).
+Hash Table: O(n * k + n * m + n) → Dominated by O(n * m).
+Vector: O(n * k + n * m * n + n^2) → Dominated by O(n^2).
+Advantages and Disadvantages of Each Data Structure
+1. Vector
+Advantages:
+Simple to implement.
+Efficient for small datasets.
+Disadvantages:
+Searching for prerequisites is O(n), which is slow for large datasets.
+Inserting courses requires shifting elements, making it inefficient (O(n)).
+2. Hash Table
+Advantages:
+Fast lookups and insertions (O(1) on average).
+Efficient for checking prerequisites.
+Disadvantages:
+Does not maintain order, requiring additional sorting for alphanumeric order.
+Memory overhead due to hashing.
+3. Binary Search Tree
+Advantages:
+Maintains alphanumeric order naturally.
+Efficient for searching (O(log n)).
+Disadvantages:
+Insertions and lookups are slower than hash tables (O(log n)).
+Requires balancing to maintain efficiency (e.g., AVL or Red-Black Tree).
+Recommendation
+Based on the analysis, the Binary Search Tree is the best choice for this program. Here's why:
+
+Maintains Alphanumeric Order: The in-order traversal of the tree naturally outputs courses in sorted order, eliminating the need for additional sorting.
+Efficient Prerequisite Checking: Searching for prerequisites is O(log n), which is acceptable for large datasets.
+Balanced Performance: While hash tables are faster for lookups, they do not maintain order, and vectors are inefficient for large datasets.
+Thus, the Binary Search Tree strikes a good balance between efficiency and meeting the program's requirements.

@@ -1,0 +1,63 @@
+FUNCTION displayMenu()
+  PRINT "Menu:"
+  PRINT "1. Load Data Structure"
+  PRINT "2. Print Course List"
+  PRINT "3. Print Course Information"
+  PRINT "9. Exit"
+END FUNCTION
+
+FUNCTION main()
+  DECLARE choice AS INTEGER
+  DECLARE courseTree AS {dataType} // dependant on data type chosen
+  SET courseTree = new {dataType}
+
+  WHILE TRUE
+    CALL displayMenu()
+    PROMPT user for choice
+    SET choice = user input
+
+    SWITCH choice
+      CASE 1:
+        DECLARE fileName AS STRING
+        PROMPT user for file name
+        SET fileName = user input
+        CALL loadCourses(fileName, courseTree)
+        PRINT "Data loaded successfully."
+        BREAK
+
+      CASE 2:
+        IF courseTree is empty THEN
+          PRINT "Error: No data loaded. Please load data first."
+        ELSE
+          CALL printCourses(courseTree)
+        END IF
+        BREAK
+
+      CASE 3:
+        IF courseTree is empty THEN
+          PRINT "Error: No data loaded. Please load data first."
+        ELSE
+          DECLARE courseNumber AS STRING
+          PROMPT user for course number
+          SET courseNumber = user input
+          CALL courseTree.inOrderTraversal(findAndPrintCourse(courseNumber))
+        END IF
+        BREAK
+
+      CASE 9:
+        PRINT "Exiting program."
+        RETURN
+
+      DEFAULT:
+        PRINT "Invalid choice. Please try again."
+    END SWITCH
+  END WHILE
+END FUNCTION
+
+FUNCTION findAndPrintCourse(courseNumber)
+  RETURN FUNCTION(course)
+    IF course.number IS EQUAL TO courseNumber THEN
+      CALL printCourse(course)
+    END IF
+  END FUNCTION
+END FUNCTION
